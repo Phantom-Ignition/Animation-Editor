@@ -40,32 +40,9 @@ namespace Animation_Editor.Sprite
             }
         }
 
-        private ObservableCollection<SpriteAnimation> _animationList;
-        public ObservableCollection<SpriteAnimation> Animations => _animationList;
-
         public SpriteObject()
         {
             _name = "[New Sprite]";
-            _animationList = new ObservableCollection<SpriteAnimation>();
-            CreateAnimation();
         }
-        
-        public void CreateAnimation()
-        {
-            var animation = new SpriteAnimation();
-            animation.Name = "New Animation";
-            animation.Frames = new List<SpriteFrame>();
-            animation.Frames.Add(new SpriteFrame() { Name = "Initial Frame" });
-            _animationList.Add(animation);
-            NotifyOfPropertyChange(() => Animations);
-        }
-
-        public void CreateFrame()
-        {
-            var frame = new SpriteFrame();
-            frame.Name = "Test Name";
-            NotifyOfPropertyChange(() => Animations);
-        }
-
     }
 }

@@ -43,12 +43,14 @@ namespace Animation_Editor.Modules.SpriteViewer
             {
                 var document = (SpriteViewModel)Shell.ActiveItem;
                 if (document == null) return;
+                /*
                 _objSettings.SelectedObject = new InspectableObjectBuilder()
                     .WithObjectProperties(document.Sprite, pd => pd.ComponentType == document.Sprite.GetType())
                     .ToInspectableObject();
 
                 
                 Shell.ShowTool(_objSettings);
+                */
                 Shell.ShowTool(IoC.Get<IOutput>());
             }
             else

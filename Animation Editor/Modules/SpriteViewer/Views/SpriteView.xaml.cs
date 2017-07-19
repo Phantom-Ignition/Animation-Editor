@@ -1,4 +1,6 @@
-﻿using Caliburn.Micro;
+﻿using Animation_Editor.Modules.SpriteViewer.ViewModels;
+using Animation_Editor.Sprite;
+using Caliburn.Micro;
 using Gemini.Modules.MonoGame.Controls;
 using Gemini.Modules.Output;
 using Microsoft.Xna.Framework;
@@ -18,21 +20,28 @@ namespace Animation_Editor.Modules.SpriteViewer.Views
     public partial class SpriteView : UserControl, IDisposable
     {
         private readonly IOutput _output;
-
-        private System.Windows.Media.ImageSource _lastSpritesheetImage;
-
-        private SpriteBatch _spriteBatch;
-
-        private bool _mouseDown;
-        private Point _mousePoint;
+        
         private Point _previousMousePosition;
 
+        private SpriteBatch _spriteBatch;
         private SpriteViewerSurface _surface;
 
         public SpriteView()
         {
             InitializeComponent();
             _output = IoC.Get<IOutput>();
+
+            Texture.SelectionChanged += OnTextureChanged;
+        }
+
+        private void OnTextureChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Texture.SelectedIndex >= 0)
+            {
+                var item = (SpriteTexture)Texture.SelectedItem;
+                using (FileStream fileStream = new FileStream(item.Path, FileMode.Open))
+                    _surface.SpritesheetTexture = Texture2D.FromStream(_spriteBatch.GraphicsDevice, fileStream);
+            }
         }
 
         public void Invalidate()
@@ -48,32 +57,25 @@ namespace Animation_Editor.Modules.SpriteViewer.Views
         private void OnGraphicsControlLoadContent(object sender, GraphicsDeviceEventArgs e)
         {
             _surface = new SpriteViewerSurface(e.GraphicsDevice);
+            _spriteBatch = new SpriteBatch(e.GraphicsDevice);
         }
 
         private void OnGraphicsControlDraw(object sender, DrawEventArgs e)
         {
             _surface.Update();
             _surface.Draw();
-
-            if (Spritesheet.Source != null && _lastSpritesheetImage != Spritesheet.Source)
-            {
-                _lastSpritesheetImage = Spritesheet.Source;
-                var stream = (FileStream)((BitmapImage)Spritesheet.Source).StreamSource;
-                using (FileStream fileStream = new FileStream(stream.Name, FileMode.Open))
-                    _surface.SpritesheetTexture = Texture2D.FromStream(e.GraphicsDevice, fileStream);
-            }
         }
 
         private void OnGraphicsControlMouseMove(object sender, MouseEventArgs e)
         {
-            var position = e.GetPosition(this);
+            var position = e.GetPosition(GraphicsControl);
             _previousMousePosition = new Point((int)position.X, (int)position.Y);
             _surface.Input.CurrentMousePosition = _previousMousePosition;
         }
 
         private void OnGraphicsControlHwndLButtonDown(object sender, MouseEventArgs e)
         {
-            var position = e.GetPosition(this);
+            var position = e.GetPosition(GraphicsControl);
             _previousMousePosition = new Point((int)position.X, (int)position.Y);
             _surface.Input.CurrentMousePosition = _previousMousePosition;
 
@@ -86,7 +88,7 @@ namespace Animation_Editor.Modules.SpriteViewer.Views
         private void OnGraphicsControlHwndLButtonUp(object sender, MouseEventArgs e)
         {
             _surface.Input.CurrentMouseState = ButtonState.Released;
-
+            
             _output.AppendLine("Mouse left button up");
             GraphicsControl.ReleaseMouseCapture();
         }

@@ -10,7 +10,6 @@ namespace Animation_Editor.Modules.Startup
         public override void Initialize()
         {
             MainWindow.Title = "Animation Editor";
-            MainWindow.WindowState = System.Windows.WindowState.Maximized;
             Shell.ToolBars.Visible = true;
         }
     }
