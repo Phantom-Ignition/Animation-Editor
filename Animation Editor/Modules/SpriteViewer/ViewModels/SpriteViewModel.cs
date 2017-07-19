@@ -1,12 +1,7 @@
 ﻿using Animation_Editor.Sprite;
 using Gemini.Framework;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Animation_Editor.Modules.SpriteViewer.ViewModels
 {
@@ -27,6 +22,13 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
                 DisplayName = value;
                 NotifyOfPropertyChange(() => Name);
             }
+        }
+
+
+        public SpriteViewModel()
+        {
+            _sprite = new SpriteObject();
+            DisplayName = _sprite.Name;
         }
     }
 }

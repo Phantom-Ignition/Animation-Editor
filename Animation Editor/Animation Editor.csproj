@@ -133,6 +133,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions\SpriteBatchExtensions.cs" />
+    <Compile Include="Modules\SpriteViewer\Module.cs" />
     <Compile Include="Sprite\SpriteObject.cs" />
     <Compile Include="Sprite\SpriteAnimation.cs" />
     <Compile Include="Sprite\SpriteFrame.cs" />
