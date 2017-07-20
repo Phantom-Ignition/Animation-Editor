@@ -10,7 +10,6 @@ using System;
 using System.IO;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 
 namespace Animation_Editor.Modules.SpriteViewer.Views
 {
@@ -106,6 +105,16 @@ namespace Animation_Editor.Modules.SpriteViewer.Views
         private void OnGraphicsControlHwndMouseWheel(object sender, MouseWheelEventArgs e)
         {
             _output.AppendLine("Mouse wheel: " + e.Delta);
+        }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
+
+        private void TreeView_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
+        {
+            _output.AppendLine(test.SelectedItem.ToString());
         }
     }
 }

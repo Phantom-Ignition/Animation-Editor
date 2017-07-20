@@ -11,12 +11,7 @@ namespace Animation_Editor.Sprite
         {
             Name = name;
             Animations = new ObservableCollection<SpriteAnimation>();
-            Animations.Add(new SpriteAnimation()
-            {
-                Name = "Default Animation",
-                Interval = 100,
-                Frames = new ObservableCollection<SpriteFrame>()
-            });
+            Animations.Add(new SpriteAnimation("Default Animation", 100, this));
         }
     }
 }

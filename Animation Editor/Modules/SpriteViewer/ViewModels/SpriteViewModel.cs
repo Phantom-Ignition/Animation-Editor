@@ -1,10 +1,15 @@
 ﻿using Animation_Editor.Sprite;
+using Caliburn.Micro;
 using Gemini.Framework;
+using Gemini.Modules.Output;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Animation_Editor.Modules.SpriteViewer.ViewModels
@@ -57,26 +62,37 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
             }
         }
 
-        private ObservableCollection<TreeViewItem> _animationItems;
-        public ObservableCollection<TreeViewItem> AnimationItems
+        private object _selectedAnimation;
+        public object SelectedAnimation
         {
-            get { return _animationItems; }
+            get { return _selectedAnimation; }
             set
             {
-                _animationItems = value;
-                NotifyOfPropertyChange(() => AnimationItems);
+                if (_selectedAnimation != value)
+                {
+                    _selectedAnimation = value;
+                    NotifyOfPropertyChange(() => SelectedAnimation);
+                }
             }
         }
+
+        //--------------------------------------------------
+        // Commands
+
+        public RelayCommand NewAnimationSetCommand { get; set; }
+        public RelayCommand NewAnimationCommand { get; set; }
 
         //----------------------//------------------------//
 
         public SpriteViewModel()
         {
+            NewAnimationSetCommand = new RelayCommand(NewAnimationSet);
+            NewAnimationCommand = new RelayCommand(NewAnimation);
+
             CreateEmptySprite();
             DisplayName = _sprite.Name;
 
             LoadTextures();
-            LoadAnimations();
         }
 
         private void CreateEmptySprite()
@@ -97,22 +113,31 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
             }
         }
 
-        private void LoadAnimations()
+        public void NewAnimationSet(object obj)
         {
-            _animationItems = new ObservableCollection<TreeViewItem>();
-            foreach (var animationSet in _animations)
+            _animations.Add(new SpriteAnimationSet("New Set"));
+        }
+
+        private void NewAnimation(object obj)
+        {
+            var anim = SelectedAnimation as SpriteAnimationSet;
+            if (anim != null)
             {
-                var treeItem = new TreeViewItem();
-                treeItem.Header = animationSet.Name;
-                treeItem.IsExpanded = true;
-
-                foreach (var animation in animationSet.Animations)
-                {
-                    treeItem.Items.Add(new TreeViewItem() { Header = animation.Name });
-                }
-
-                _animationItems.Add(treeItem);
+                var newAnimation = new SpriteAnimation("New Animation", 100, anim);
+                anim.Animations.Add(newAnimation);
             }
+            else
+            {
+                var animationSet = (SelectedAnimation as SpriteAnimation).Parent;
+                var newAnimation = new SpriteAnimation("New Animation", 100, animationSet);
+                animationSet.Animations.Add(newAnimation);
+            }
+        }
+
+        private void OnAnimationChanged()
+        {
+            //IoC.Get<IOutput>().AppendLine(_isAnimationSelected.ToString());
+            IoC.Get<IOutput>().AppendLine(SelectedAnimation.ToString());
         }
     }
 }
