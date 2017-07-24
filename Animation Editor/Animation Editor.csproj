@@ -138,9 +138,11 @@
     <Compile Include="Extensions\SpriteBatchExtensions.cs" />
     <Compile Include="Modules\SpriteViewer\Module.cs" />
     <Compile Include="Sprite\SpriteAnimationSet.cs" />
+    <Compile Include="Sprite\SpriteCollisorBase.cs" />
     <Compile Include="Sprite\SpriteObject.cs" />
     <Compile Include="Sprite\SpriteAnimation.cs" />
     <Compile Include="Sprite\SpriteFrame.cs" />
+    <Compile Include="Sprite\SpriteRectangleCollisor.cs" />
     <Compile Include="Sprite\SpriteTexture.cs" />
   </ItemGroup>
   <ItemGroup>

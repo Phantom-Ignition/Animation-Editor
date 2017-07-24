@@ -19,7 +19,7 @@ namespace Animation_Editor
          */
         private void MaximizeToSecondaryMonitor(Window window)
         {
-            var secondaryScreen = System.Windows.Forms.Screen.AllScreens[1];
+            var secondaryScreen = System.Windows.Forms.Screen.AllScreens[0];
 
             if (secondaryScreen != null)
             {

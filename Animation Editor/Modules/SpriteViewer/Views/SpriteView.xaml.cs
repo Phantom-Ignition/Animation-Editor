@@ -106,15 +106,5 @@ namespace Animation_Editor.Modules.SpriteViewer.Views
         {
             _output.AppendLine("Mouse wheel: " + e.Delta);
         }
-
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-
-        }
-
-        private void TreeView_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
-        {
-            _output.AppendLine(test.SelectedItem.ToString());
-        }
     }
 }

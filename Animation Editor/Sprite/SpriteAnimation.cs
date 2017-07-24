@@ -20,6 +20,7 @@ namespace Animation_Editor.Sprite
             Name = name;
             Interval = interval;
             Frames = new ObservableCollection<SpriteFrame>();
+            Frames.Add(new SpriteFrame());
             Parent = parent;
         }
     }

@@ -72,6 +72,27 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
                 {
                     _selectedAnimation = value;
                     NotifyOfPropertyChange(() => SelectedAnimation);
+                    NotifyOfPropertyChange(() => Frames);
+                }
+            }
+        }
+
+        //--------------------------------------------------
+        // Frames
+
+        ObservableCollection<SpriteFrame> teste = new ObservableCollection<SpriteFrame>();
+        public ObservableCollection<SpriteFrame> Frames
+        {
+            get
+            {
+                var anim = SelectedAnimation as SpriteAnimation;
+                if (anim == null)
+                {
+                    return new ObservableCollection<SpriteFrame>();
+                } 
+                else
+                {
+                    return anim.Frames;
                 }
             }
         }
@@ -105,6 +126,7 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
         private void LoadTextures()
         {
             _textures = new ObservableCollection<SpriteTexture>();
+
             string[] textureFiles = Directory.GetFiles(Environment.CurrentDirectory + "/textures", "*.png");
             foreach (var file in textureFiles)
             {
