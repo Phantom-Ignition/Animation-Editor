@@ -79,8 +79,7 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
 
         //--------------------------------------------------
         // Frames
-
-        ObservableCollection<SpriteFrame> teste = new ObservableCollection<SpriteFrame>();
+        
         public ObservableCollection<SpriteFrame> Frames
         {
             get
@@ -93,6 +92,20 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
                 else
                 {
                     return anim.Frames;
+                }
+            }
+        }
+
+        private object _selectedFrame;
+        public object SelectedFrame
+        {
+            get { return _selectedFrame; }
+            set
+            {
+                if (_selectedFrame != value)
+                {
+                    _selectedFrame = value;
+                    NotifyOfPropertyChange(() => SelectedFrame);
                 }
             }
         }

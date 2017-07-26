@@ -47,15 +47,15 @@
 
                 <TreeView Height="250" ItemsSource="{Binding Frames}">
                     <i:Interaction.Behaviors>
-                        <behaviours:BindableSelectedItemBehaviour SelectedItem="{Binding SelectedAnimation, Mode=TwoWay}" />
+                        <behaviours:BindableSelectedItemBehaviour SelectedItem="{Binding SelectedFrame, Mode=TwoWay}" />
                     </i:Interaction.Behaviors>
                     <TreeView.Resources>
-                        <HierarchicalDataTemplate DataType="{x:Type src:SpriteFrame}" ItemsSource="{Binding Frames}">
+                        <HierarchicalDataTemplate DataType="{x:Type src:SpriteFrame}" ItemsSource="{Binding Collisors}">
                             <TextBlock Text="{Binding Name}"/>
                         </HierarchicalDataTemplate>
-                        <!--DataTemplate DataType="{x:Type src:SpriteAnimation}">
+                        <DataTemplate DataType="{x:Type src:SpriteCollisorBase}">
                             <TextBlock Text="{Binding Name}" />
-                        </DataTemplate-->
+                        </DataTemplate>
                     </TreeView.Resources>
                 </TreeView>
             </StackPanel>

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.Xna.Framework;
+using System.Collections.ObjectModel;
 
 namespace Animation_Editor.Sprite
 {
@@ -11,7 +12,7 @@ namespace Animation_Editor.Sprite
 
         public SpriteAnimation(SpriteAnimationSet parent)
         {
-            Frames = new ObservableCollection<Sprite.SpriteFrame>();
+            Frames = new ObservableCollection<SpriteFrame>();
             Parent = parent;
         }
 
@@ -20,7 +21,11 @@ namespace Animation_Editor.Sprite
             Name = name;
             Interval = interval;
             Frames = new ObservableCollection<SpriteFrame>();
-            Frames.Add(new SpriteFrame());
+            var frame = new SpriteFrame();
+            frame.Collisors.Add(new SpriteRectangleCollisor("defaul1", new Rectangle(0, 0, 32, 32)));
+            frame.Collisors.Add(new SpriteRectangleCollisor("dee fault two", new Rectangle(32, 64, 32, 32)));
+            Frames.Add(frame);
+            
             Parent = parent;
         }
     }
