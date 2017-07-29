@@ -1,19 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Animation_Editor.Sprite
+namespace Animation_Editor.ProjectSprite
 {
-    class SpriteRectangleCollisor : SpriteCollisorBase
+    class AnimationRectangleCollisor : AnimationColliderBase
     {
         public Vector2 Size { get; set; }
 
-        public SpriteRectangleCollisor(string name, Vector2 size, Vector2 position)
+        public AnimationRectangleCollisor(string name, Vector2 size, Vector2 position)
         {
             Name = name;
             Size = size;
             Position = position;
         }
 
-        public SpriteRectangleCollisor(string name, Rectangle rect)
+        public AnimationRectangleCollisor(string name, Rectangle rect)
         {
             Name = name;
             Size = rect.Size.ToVector2();

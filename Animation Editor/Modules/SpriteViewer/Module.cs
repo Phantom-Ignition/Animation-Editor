@@ -1,5 +1,5 @@
 ﻿using Animation_Editor.Modules.SpriteViewer.ViewModels;
-using Animation_Editor.Sprite;
+using Animation_Editor.ProjectSprite;
 using Caliburn.Micro;
 using Gemini.Framework;
 using Gemini.Framework.Services;
@@ -51,7 +51,6 @@ namespace Animation_Editor.Modules.SpriteViewer
                 
                 Shell.ShowTool(_objSettings);
                 */
-                Shell.ShowTool(IoC.Get<IOutput>());
             }
             else
             {

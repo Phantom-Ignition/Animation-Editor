@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:gemini="http://schemas.timjones.tw/gemini"
-             xmlns:src="clr-namespace:Animation_Editor.Sprite"
+             xmlns:src="clr-namespace:Animation_Editor.ProjectSprite"
              xmlns:local="clr-namespace:Animation_Editor.Modules.SpriteViewer.ViewModels"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:behaviours="clr-namespace:Animation_Editor.Behaviours"
@@ -14,20 +14,26 @@
     <Grid Margin="10 0 10 0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="0" MinWidth="200" Margin="0 10 20 0">
+        <Grid Grid.Column="0" MinWidth="170" Margin="0 10 20 0">
             <StackPanel HorizontalAlignment="Stretch">
                 <Label Content="Texture:" />
                 <ComboBox x:Name="Texture" ItemsSource="{Binding Textures}" SelectedItem="{Binding Texture}" HorizontalContentAlignment="Stretch"/>
 
                 <Label Content="Animations:" Margin="0 10 0 0" />
 
-                <TreeView Height="250" ItemsSource="{Binding Animations}">
+                <TreeView x:Name="AnimationsTreeView" Height="250" ItemsSource="{Binding Animations}">
                     <i:Interaction.Behaviors>
                         <behaviours:BindableSelectedItemBehaviour SelectedItem="{Binding SelectedAnimation, Mode=TwoWay}" />
                     </i:Interaction.Behaviors>
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsExpanded" Value="True" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type src:SpriteAnimationSet}" ItemsSource="{Binding Animations}">
                             <TextBlock Text="{Binding Name}"/>
@@ -45,29 +51,65 @@
 
                 <Label Content="Frames:" Margin="0 10 0 0" />
 
-                <TreeView Height="250" ItemsSource="{Binding Frames}">
+                <TreeView x:Name="FramesTreeView" Height="250" ItemsSource="{Binding Frames}">
                     <i:Interaction.Behaviors>
                         <behaviours:BindableSelectedItemBehaviour SelectedItem="{Binding SelectedFrame, Mode=TwoWay}" />
                     </i:Interaction.Behaviors>
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsExpanded" Value="True" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
                     <TreeView.Resources>
-                        <HierarchicalDataTemplate DataType="{x:Type src:SpriteFrame}" ItemsSource="{Binding Collisors}">
+                        <HierarchicalDataTemplate DataType="{x:Type src:AnimationFrame}" ItemsSource="{Binding Collisors}">
                             <TextBlock Text="{Binding Name}"/>
                         </HierarchicalDataTemplate>
-                        <DataTemplate DataType="{x:Type src:SpriteCollisorBase}">
+                        <DataTemplate DataType="{x:Type src:AnimationColliderBase}">
                             <TextBlock Text="{Binding Name}" />
                         </DataTemplate>
                     </TreeView.Resources>
                 </TreeView>
             </StackPanel>
-
         </Grid>
         
         <GridSplitter Grid.Column="0" Width="4" />
 
+        <Grid Grid.Column="1" MinWidth="170" Margin="10 10 20 0">
+            <StackPanel HorizontalAlignment="Stretch">
+                <Label Content="General" />
+
+                <Grid Margin="0 0 0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="Grid Size:" Grid.Column="0" />
+                    <TextBox Margin="5 0 0 0" Text="{Binding GridSize}" Grid.Column="1" />
+                </Grid>
+                
+                <Label Content="Animation" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="Frames Delay (ms):" Grid.Column="0" />
+                    <TextBox Margin="5 0 0 0" Text="{Binding FramesDelay}" Grid.Column="1" />
+                </Grid>
+
+
+            </StackPanel>
+        </Grid>
+
+        <GridSplitter Grid.Column="1" Width="4" />
+
         <gemini:DrawingSurface x:Name="GraphicsControl"
                                AlwaysRefresh="True"
                                Margin="10"
-                               Grid.Column="1"
+                               Grid.Column="2"
 							   LoadContent="OnGraphicsControlLoadContent"
 							   Draw="OnGraphicsControlDraw" 
 							   MouseMove="OnGraphicsControlMouseMove"

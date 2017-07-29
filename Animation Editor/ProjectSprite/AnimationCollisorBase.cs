@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Animation_Editor.Sprite
+namespace Animation_Editor.ProjectSprite
 {
-    class SpriteCollisorBase
+    public class AnimationColliderBase
     {
         public string Name { get; set; }
         public Vector2 Position { get; set; }

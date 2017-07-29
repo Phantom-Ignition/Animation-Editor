@@ -1,5 +1,5 @@
 ﻿using Animation_Editor.Modules.SpriteViewer.ViewModels;
-using Animation_Editor.Sprite;
+using Animation_Editor.ProjectSprite;
 using Caliburn.Micro;
 using Gemini.Modules.MonoGame.Controls;
 using Gemini.Modules.Output;
@@ -57,10 +57,23 @@ namespace Animation_Editor.Modules.SpriteViewer.Views
         {
             _surface = new SpriteViewerSurface(e.GraphicsDevice);
             _spriteBatch = new SpriteBatch(e.GraphicsDevice);
+
+            Texture.SelectedIndex = 5;
         }
 
         private void OnGraphicsControlDraw(object sender, DrawEventArgs e)
         {
+            var model = (SpriteViewModel)DataContext;
+
+            var selectedAnim = model.SelectedAnimation;
+
+            SpriteViewerSurfaceData data = new SpriteViewerSurfaceData()
+            {
+                GridSize = model.GridSize,
+                DrawEntireSpritesheet = selectedAnim is SpriteAnimationSet,
+                CurrentAnimation = selectedAnim as SpriteAnimation
+            };
+            _surface.SetData(data);
             _surface.Update();
             _surface.Draw();
         }

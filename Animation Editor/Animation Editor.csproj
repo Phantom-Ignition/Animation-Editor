@@ -71,6 +71,9 @@
       <HintPath>..\packages\MahApps.Metro.1.0.0.0\lib\net45\MahApps.Metro.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MonoGame.Extended">
+      <HintPath>..\packages\MonoGame.Extended.0.5.149\lib\MonoGame.Extended.dll</HintPath>
+    </Reference>
     <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
       <Private>True</Private>
@@ -137,13 +140,14 @@
     <Compile Include="Behaviours\BindableSelectedItemBehaviour.cs" />
     <Compile Include="Extensions\SpriteBatchExtensions.cs" />
     <Compile Include="Modules\SpriteViewer\Module.cs" />
-    <Compile Include="Sprite\SpriteAnimationSet.cs" />
-    <Compile Include="Sprite\SpriteCollisorBase.cs" />
-    <Compile Include="Sprite\SpriteObject.cs" />
-    <Compile Include="Sprite\SpriteAnimation.cs" />
-    <Compile Include="Sprite\SpriteFrame.cs" />
-    <Compile Include="Sprite\SpriteRectangleCollisor.cs" />
-    <Compile Include="Sprite\SpriteTexture.cs" />
+    <Compile Include="Modules\SpriteViewer\SpriteViewerSurfaceData.cs" />
+    <Compile Include="ProjectSprite\AnimatedSprite.cs" />
+    <Compile Include="ProjectSprite\SpriteAnimationSet.cs" />
+    <Compile Include="ProjectSprite\AnimationCollisorBase.cs" />
+    <Compile Include="ProjectSprite\SpriteAnimation.cs" />
+    <Compile Include="ProjectSprite\AnimationFrame.cs" />
+    <Compile Include="ProjectSprite\AnimationRectangleCollisor.cs" />
+    <Compile Include="ProjectSprite\SpriteTexture.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Modules\SpriteViewer\SpriteViewerSurface.cs" />

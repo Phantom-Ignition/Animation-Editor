@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Animation_Editor.Sprite
+namespace Animation_Editor.ProjectSprite
 {
-    class SpriteAnimationSet
+    public class SpriteAnimationSet
     {
         public string Name { get; set; }
         public ObservableCollection<SpriteAnimation> Animations { get; set; }

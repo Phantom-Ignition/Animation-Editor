@@ -1,5 +1,5 @@
 ﻿using Animation_Editor.Extensions;
-using Animation_Editor.Sprite;
+using Animation_Editor.ProjectSprite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -27,6 +27,17 @@ namespace Animation_Editor.Modules.SpriteViewer
         public Texture2D SpritesheetTexture { get; set; }
 
         //--------------------------------------------------
+        // Data
+
+        private SpriteViewerSurfaceData _data;
+        private int _oldGridSize;
+
+        //--------------------------------------------------
+        // Grid
+
+        private Texture2D _gridTexture;
+
+        //--------------------------------------------------
         // Selection
 
         private Texture2D _selectionTexture;
@@ -36,7 +47,7 @@ namespace Animation_Editor.Modules.SpriteViewer
         //--------------------------------------------------
         // Current Frame
 
-        private SpriteFrame _currentFrame;
+        private AnimationFrame _currentFrame;
         private Texture2D _currentFrameTexure;
 
         //----------------------//------------------------//
@@ -50,8 +61,20 @@ namespace Animation_Editor.Modules.SpriteViewer
             _selectionTexture = new Texture2D(_graphicsDevice, 1, 1);
             _selectionTexture.SetData(new[] { Color.Orange });
 
-            _currentFrame = new SpriteFrame();
+            _currentFrame = new AnimationFrame();
             _currentFrameTexure = new Texture2D(_graphicsDevice, 1, 1);
+
+            _gridTexture = new Texture2D(_graphicsDevice, 1, 1);
+            _gridTexture.SetData(new[] { Color.Gray });
+        }
+
+        public void SetData(SpriteViewerSurfaceData data)
+        {
+            _data = data;
+            if (_data.GridSize != _oldGridSize)
+            {
+
+            }
         }
 
         public void Update()
@@ -80,7 +103,10 @@ namespace Animation_Editor.Modules.SpriteViewer
         public void Draw()
         {
             _graphicsDevice.Clear(Color.CornflowerBlue);
+
             _spriteBatch.Begin();
+
+            DrawGrid();
 
             DrawSpritesheet();
             DrawFrameRect();
@@ -91,13 +117,13 @@ namespace Animation_Editor.Modules.SpriteViewer
 
         private void DrawSpritesheet()
         {
-            if (SpritesheetTexture != null)
+            if (SpritesheetTexture != null && _data.DrawEntireSpritesheet)
             {
                 var texture = SpritesheetTexture;
                 var vp = _graphicsDevice.Viewport;
                 var dest = new Vector2((vp.Width - texture.Width) / 2, (vp.Height - texture.Height) / 2);
                 var alpha = _currentFrame.FrameRect == Rectangle.Empty ? 0.5f : 1.0f;
-                _spriteBatch.Draw(texture, dest, Color.White * alpha);
+                _spriteBatch.Draw(texture, Vector2.Zero, Color.White * alpha);
             }
         }
 
@@ -118,6 +144,26 @@ namespace Animation_Editor.Modules.SpriteViewer
                 var rect = GetSelectionRectangle();
                 _spriteBatch.Draw(_selectionTexture, rect, Color.White * 0.5f);
                 _spriteBatch.DrawRectangleBorder(_selectionTexture, rect, 2);
+            }
+        }
+
+        private void DrawGrid()
+        {
+            var height = _spriteBatch.GraphicsDevice.Viewport.Height;
+            var width = _spriteBatch.GraphicsDevice.Viewport.Width;
+            var cols = width / _data.GridSize + 1;
+            var rows = height / _data.GridSize + 1;
+
+            for (float x = -cols; x < cols; x++)
+            {
+                var rect = new Rectangle((int)(x * _data.GridSize), 0, 1, height);
+                _spriteBatch.Draw(_gridTexture, rect, Color.White * 0.8f);
+            }
+
+            for (float y = -rows; y < rows; y++)
+            {
+                var rect = new Rectangle(0, (int)(y * _data.GridSize), width, 1);
+                _spriteBatch.Draw(_gridTexture, rect, Color.White * 0.8f);
             }
         }
 

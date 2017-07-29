@@ -1,4 +1,4 @@
-﻿namespace Animation_Editor.Sprite
+﻿namespace Animation_Editor.ProjectSprite
 {
     class SpriteTexture
     {

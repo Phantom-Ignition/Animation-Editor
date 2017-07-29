@@ -1,4 +1,4 @@
-﻿using Animation_Editor.Sprite;
+﻿using Animation_Editor.ProjectSprite;
 using Caliburn.Micro;
 using Gemini.Framework;
 using Gemini.Modules.Output;
@@ -80,14 +80,14 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
         //--------------------------------------------------
         // Frames
         
-        public ObservableCollection<SpriteFrame> Frames
+        public ObservableCollection<AnimationFrame> Frames
         {
             get
             {
                 var anim = SelectedAnimation as SpriteAnimation;
                 if (anim == null)
                 {
-                    return new ObservableCollection<SpriteFrame>();
+                    return new ObservableCollection<AnimationFrame>();
                 } 
                 else
                 {
@@ -107,6 +107,35 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
                     _selectedFrame = value;
                     NotifyOfPropertyChange(() => SelectedFrame);
                 }
+            }
+        }
+
+        //--------------------------------------------------
+        // Grid Size
+
+        private int _gridSize = 32;
+        public int GridSize
+        {
+            get { return _gridSize; }
+            set
+            {
+                _gridSize = value;
+                NotifyOfPropertyChange(() => GridSize);
+                Sprite
+            }
+        }
+
+        //--------------------------------------------------
+        // Frames delay
+
+        private int _framesDelay = 120;
+        public int FramesDelay
+        {
+            get { return _framesDelay; }
+            set
+            {
+                _framesDelay = value;
+                NotifyOfPropertyChange(() => FramesDelay);
             }
         }
 
@@ -155,6 +184,10 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
 
         private void NewAnimation(object obj)
         {
+            if (SelectedAnimation == null)
+            {
+                MessageBox.Show("No animation set selected!");
+            }
             var anim = SelectedAnimation as SpriteAnimationSet;
             if (anim != null)
             {
