@@ -10,11 +10,11 @@ namespace Animation_Editor.ProjectSprite
         public Color Color { get; set; }
         public ObservableCollection<AnimationColliderBase> Colliders { get; set; }
 
-        public AnimationFrame(string name)
+        public AnimationFrame()
         {
-            Name = name;
+            Name = "";
             FrameRect = Rectangle.Empty;
-            Color = Color.Red;
+            Color = Color.IndianRed;
             Colliders = new ObservableCollection<AnimationColliderBase>();
         }
     }

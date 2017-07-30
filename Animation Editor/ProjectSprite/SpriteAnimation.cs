@@ -24,16 +24,8 @@ namespace Animation_Editor.ProjectSprite
             Interval = interval;
             Loop = interval > 0;
             Reset = Loop;
-
             Frames = new ObservableCollection<AnimationFrame>();
-            var frame = new AnimationFrame("new name");
-            frame.Colliders.Add(new AnimationRectangleCollisor("defaul1", new Rectangle(0, 0, 32, 32)));
-            frame.Colliders.Add(new AnimationRectangleCollisor("dee fault two", new Rectangle(32, 64, 32, 32)));
-            Frames.Add(frame);
-            
             Parent = parent;
-
-            
         }
     }
 }

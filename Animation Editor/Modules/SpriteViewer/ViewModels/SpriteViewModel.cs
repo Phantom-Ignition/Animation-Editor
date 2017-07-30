@@ -3,26 +3,23 @@ using Caliburn.Micro;
 using Gemini.Framework;
 using Gemini.Modules.Output;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Animation_Editor.Modules.SpriteViewer.ViewModels
 {
+    public enum SpriteViewerRequests
+    {
+        Standard,
+        EditFrame,
+        EditCollider
+    }
+
     [Export(typeof(SpriteViewModel))]
     class SpriteViewModel : Document
     {
-        //--------------------------------------------------
-        // Sprite
-
-        private SpriteObject _sprite;
-        public SpriteObject Sprite => _sprite;
-
         //--------------------------------------------------
         // Textures & Current Texture
 
@@ -121,7 +118,6 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
             {
                 _gridSize = value;
                 NotifyOfPropertyChange(() => GridSize);
-                Sprite
             }
         }
 
@@ -144,6 +140,14 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
 
         public RelayCommand NewAnimationSetCommand { get; set; }
         public RelayCommand NewAnimationCommand { get; set; }
+        public RelayCommand NewFrameCommand { get; set; }
+        public RelayCommand NewColliderCommand { get; set; }
+
+        //--------------------------------------------------
+        // Request
+        
+        public object EditRequest { get; set; }
+        public SpriteViewerRequests Request { get; set; }
 
         //----------------------//------------------------//
 
@@ -151,16 +155,17 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
         {
             NewAnimationSetCommand = new RelayCommand(NewAnimationSet);
             NewAnimationCommand = new RelayCommand(NewAnimation);
+            NewFrameCommand = new RelayCommand(NewFrame);
+            NewColliderCommand = new RelayCommand(NewCollider);
 
             CreateEmptySprite();
-            DisplayName = _sprite.Name;
+            DisplayName = "[New Sprite]";
 
             LoadTextures();
         }
 
         private void CreateEmptySprite()
         {
-            _sprite = new SpriteObject();
             _animations = new ObservableCollection<SpriteAnimationSet>();
             _animations.Add(new SpriteAnimationSet("Default Folder"));
         }
@@ -177,7 +182,7 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
             }
         }
 
-        public void NewAnimationSet(object obj)
+        private void NewAnimationSet(object obj)
         {
             _animations.Add(new SpriteAnimationSet("New Set"));
         }
@@ -202,10 +207,42 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
             }
         }
 
+        private void NewFrame(object obj)
+        {
+            var anim = SelectedAnimation as SpriteAnimation;
+            if (anim == null)
+            {
+                MessageBox.Show("No animation set selected!");
+                return;
+            }
+            var newFrame = new AnimationFrame();
+            newFrame.Name = anim.Frames.Count.ToString();
+            EditRequest = newFrame;
+            Request = SpriteViewerRequests.EditFrame;
+        }
+
+        private void NewCollider(object obj) { }
+
+        public void OnNewFrameSelected(AnimationFrame newFrame)
+        {
+            var anim = SelectedAnimation as SpriteAnimation;
+            if (anim == null) return;
+
+            newFrame.Name = anim.Frames.Count.ToString();
+
+            anim.Frames.Add(newFrame);
+        }
+
         private void OnAnimationChanged()
         {
             //IoC.Get<IOutput>().AppendLine(_isAnimationSelected.ToString());
             IoC.Get<IOutput>().AppendLine(SelectedAnimation.ToString());
+        }
+
+        public void ResetRequest()
+        {
+            EditRequest = null;
+            Request = SpriteViewerRequests.Standard;
         }
     }
 }

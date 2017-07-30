@@ -64,18 +64,21 @@ namespace Animation_Editor.Modules.SpriteViewer.Views
         private void OnGraphicsControlDraw(object sender, DrawEventArgs e)
         {
             var model = (SpriteViewModel)DataContext;
-
             var selectedAnim = model.SelectedAnimation;
-
             SpriteViewerSurfaceData data = new SpriteViewerSurfaceData()
             {
                 GridSize = model.GridSize,
-                DrawEntireSpritesheet = selectedAnim is SpriteAnimationSet,
-                CurrentAnimation = selectedAnim as SpriteAnimation
+                DrawEntireSpritesheet = selectedAnim is SpriteAnimationSet || selectedAnim is SpriteAnimation,
+                CurrentAnimation = selectedAnim as SpriteAnimation,
+                CurrentFrame = model.SelectedFrame as AnimationFrame,
+                OnNewFrameSelected = model.OnNewFrameSelected,
+                EditRequest = model.EditRequest,
+                Request = model.Request
             };
             _surface.SetData(data);
             _surface.Update();
             _surface.Draw();
+            model.ResetRequest();
         }
 
         private void OnGraphicsControlMouseMove(object sender, MouseEventArgs e)

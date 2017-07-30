@@ -1,9 +1,6 @@
 ﻿using Animation_Editor.ProjectSprite;
+using Animation_Editor.Modules.SpriteViewer.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Animation_Editor.Modules.SpriteViewer
 {
@@ -12,5 +9,9 @@ namespace Animation_Editor.Modules.SpriteViewer
         public int GridSize { get; set; }
         public bool DrawEntireSpritesheet { get; set; }
         public SpriteAnimation CurrentAnimation { get; set; }
+        public AnimationFrame CurrentFrame { get; set; }
+        public object EditRequest { get; set; }
+        public SpriteViewerRequests Request { get; set; }
+        public Action<AnimationFrame> OnNewFrameSelected { get; set; }
     }
 }

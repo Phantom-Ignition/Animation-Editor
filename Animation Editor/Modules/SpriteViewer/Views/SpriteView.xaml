@@ -51,7 +51,7 @@
 
                 <Label Content="Frames:" Margin="0 10 0 0" />
 
-                <TreeView x:Name="FramesTreeView" Height="250" ItemsSource="{Binding Frames}">
+                <TreeView x:Name="FramesTreeView" Height="150" ItemsSource="{Binding Frames}">
                     <i:Interaction.Behaviors>
                         <behaviours:BindableSelectedItemBehaviour SelectedItem="{Binding SelectedFrame, Mode=TwoWay}" />
                     </i:Interaction.Behaviors>
@@ -69,6 +69,11 @@
                         </DataTemplate>
                     </TreeView.Resources>
                 </TreeView>
+
+                <StackPanel Orientation="Horizontal" >
+                    <Button Content="+ Frame" Command="{Binding NewFrameCommand}" />
+                    <Button Content="+ Collider" Command="{Binding NewColliderCommand}"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
         

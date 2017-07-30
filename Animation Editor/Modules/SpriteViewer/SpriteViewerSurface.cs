@@ -1,12 +1,8 @@
 ﻿using Animation_Editor.Extensions;
+using Animation_Editor.Modules.SpriteViewer.ViewModels;
 using Animation_Editor.ProjectSprite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Animation_Editor.Modules.SpriteViewer
 {
@@ -30,7 +26,6 @@ namespace Animation_Editor.Modules.SpriteViewer
         // Data
 
         private SpriteViewerSurfaceData _data;
-        private int _oldGridSize;
 
         //--------------------------------------------------
         // Grid
@@ -50,6 +45,19 @@ namespace Animation_Editor.Modules.SpriteViewer
         private AnimationFrame _currentFrame;
         private Texture2D _currentFrameTexure;
 
+        //--------------------------------------------------
+        // Current Phase
+
+        private enum SurfacePhase
+        {
+            Standard,
+            FrameEdit,
+            ColliderEdit
+        }
+        private SurfacePhase _phase;
+
+        private object _editObject;
+
         //----------------------//------------------------//
 
         public SpriteViewerSurface(GraphicsDevice graphicsDevice)
@@ -61,8 +69,9 @@ namespace Animation_Editor.Modules.SpriteViewer
             _selectionTexture = new Texture2D(_graphicsDevice, 1, 1);
             _selectionTexture.SetData(new[] { Color.Orange });
 
-            _currentFrame = new AnimationFrame();
+            _currentFrame = null;
             _currentFrameTexure = new Texture2D(_graphicsDevice, 1, 1);
+            _currentFrameTexure.SetData(new Color[] { Color.White });
 
             _gridTexture = new Texture2D(_graphicsDevice, 1, 1);
             _gridTexture.SetData(new[] { Color.Gray });
@@ -71,17 +80,21 @@ namespace Animation_Editor.Modules.SpriteViewer
         public void SetData(SpriteViewerSurfaceData data)
         {
             _data = data;
-            if (_data.GridSize != _oldGridSize)
+            if (_data.Request == SpriteViewerRequests.EditFrame)
             {
-
+                _phase = SurfacePhase.FrameEdit;
+                _editObject = _data.EditRequest;
             }
         }
 
         public void Update()
         {
             _input.Update();
-            
-            UpdateSelection();
+
+            if (_phase == SurfacePhase.FrameEdit || _phase == SurfacePhase.ColliderEdit)
+            {
+                UpdateSelection();
+            }
 
             _input.PostUpdate();
         }
@@ -95,8 +108,14 @@ namespace Animation_Editor.Modules.SpriteViewer
             }
             if (_input.MouseReleased())
             {
-                _currentFrame.FrameRect = GetSelectionRectangle();
-                _currentFrame.Color = Color.IndianRed;
+                if (_phase == SurfacePhase.FrameEdit)
+                {
+                    var frame = _editObject as AnimationFrame;
+                    frame.FrameRect = GetSelectionRectangle();
+                    _data.OnNewFrameSelected(frame);
+                }
+                
+                _phase = SurfacePhase.Standard;
             }
         }
 
@@ -110,6 +129,7 @@ namespace Animation_Editor.Modules.SpriteViewer
 
             DrawSpritesheet();
             DrawFrameRect();
+            DrawColliders();
             DrawSelection();
 
             _spriteBatch.End();
@@ -122,19 +142,26 @@ namespace Animation_Editor.Modules.SpriteViewer
                 var texture = SpritesheetTexture;
                 var vp = _graphicsDevice.Viewport;
                 var dest = new Vector2((vp.Width - texture.Width) / 2, (vp.Height - texture.Height) / 2);
-                var alpha = _currentFrame.FrameRect == Rectangle.Empty ? 0.5f : 1.0f;
+                var alpha = 1.0f;
                 _spriteBatch.Draw(texture, Vector2.Zero, Color.White * alpha);
             }
         }
 
         private void DrawFrameRect()
         {
-            if (_currentFrame.FrameRect != Rectangle.Empty)
+            if (_data.CurrentFrame == null || _phase != SurfacePhase.Standard) return;
+            var frame = _data.CurrentFrame;
+            if (frame.FrameRect != Rectangle.Empty)
             {
-                var rect = _currentFrame.FrameRect;
-                _spriteBatch.Draw(_currentFrameTexure, rect, Color.White * 0.5f);
-                _spriteBatch.DrawRectangleBorder(_currentFrameTexure, rect, 2);
+                var rect = frame.FrameRect;
+                _spriteBatch.Draw(_currentFrameTexure, rect, frame.Color * 0.5f);
+                _spriteBatch.DrawRectangleBorder(_currentFrameTexure, rect, 2, frame.Color);
             }
+        }
+
+        private void DrawColliders()
+        {
+
         }
 
         private void DrawSelection()
@@ -143,7 +170,7 @@ namespace Animation_Editor.Modules.SpriteViewer
             {
                 var rect = GetSelectionRectangle();
                 _spriteBatch.Draw(_selectionTexture, rect, Color.White * 0.5f);
-                _spriteBatch.DrawRectangleBorder(_selectionTexture, rect, 2);
+                _spriteBatch.DrawRectangleBorder(_selectionTexture, rect, 2, Color.Orange);
             }
         }
 
