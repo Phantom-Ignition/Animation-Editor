@@ -13,5 +13,6 @@ namespace Animation_Editor.Modules.SpriteViewer
         public object EditRequest { get; set; }
         public SpriteViewerRequests Request { get; set; }
         public Action<AnimationFrame> OnNewFrameSelected { get; set; }
+        public Action<AnimatedSprite> OnSpriteCreated { get; set; }
     }
 }

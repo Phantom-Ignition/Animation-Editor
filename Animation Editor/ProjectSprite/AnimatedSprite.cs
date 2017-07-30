@@ -32,6 +32,12 @@ namespace Animation_Editor.ProjectSprite
         // Animations
 
         private List<SpriteAnimationSet> _animations;
+
+        public List<SpriteAnimationSet> Animations
+        {
+            get { return _animations; }
+            set { _animations = value; }
+        }
         private int _delayTick;
 
         private SpriteAnimation _currentAnimation;
@@ -123,6 +129,13 @@ namespace Animation_Editor.ProjectSprite
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
             if (!IsVisible) return;
+
+            if (_currentAnimation == null)
+            {
+                spriteBatch.Draw(TextureRegion.Texture, position, TextureRegion.Bounds,
+                                Color * Alpha, Rotation, Origin, Scale, Effect, 0);
+                return;
+            }
 
             spriteBatch.Draw(TextureRegion.Texture, position, _currentAnimation.Frames[_currentFrame].FrameRect,
                 Color * Alpha, Rotation, Origin, Scale, Effect, 0);

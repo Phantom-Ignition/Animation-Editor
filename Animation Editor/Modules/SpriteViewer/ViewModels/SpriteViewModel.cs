@@ -2,7 +2,9 @@
 using Caliburn.Micro;
 using Gemini.Framework;
 using Gemini.Modules.Output;
+using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -13,6 +15,7 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
     public enum SpriteViewerRequests
     {
         Standard,
+        CreateSprite,
         EditFrame,
         EditCollider
     }
@@ -44,6 +47,11 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
                 NotifyOfPropertyChange(() => Texture);
             }
         }
+
+        //--------------------------------------------------
+        // Sprite
+        
+        public AnimatedSprite Sprite { get; set; }
 
         //--------------------------------------------------
         // Animations
@@ -142,10 +150,12 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
         public RelayCommand NewAnimationCommand { get; set; }
         public RelayCommand NewFrameCommand { get; set; }
         public RelayCommand NewColliderCommand { get; set; }
+        public RelayCommand PlayAnimationCommand { get; set; }
+        public RelayCommand StopAnimationCommand { get; set; }
 
         //--------------------------------------------------
         // Request
-        
+
         public object EditRequest { get; set; }
         public SpriteViewerRequests Request { get; set; }
 
@@ -157,17 +167,20 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
             NewAnimationCommand = new RelayCommand(NewAnimation);
             NewFrameCommand = new RelayCommand(NewFrame);
             NewColliderCommand = new RelayCommand(NewCollider);
+            PlayAnimationCommand = new RelayCommand(PlayAnimation);
+            StopAnimationCommand = new RelayCommand(StopAnimation);
 
-            CreateEmptySprite();
+            CreateSprite();
             DisplayName = "[New Sprite]";
+
+            _animations = new ObservableCollection<SpriteAnimationSet>();
+            _animations.Add(new SpriteAnimationSet("Default Folder"));
 
             LoadTextures();
         }
 
-        private void CreateEmptySprite()
+        private void CreateSprite()
         {
-            _animations = new ObservableCollection<SpriteAnimationSet>();
-            _animations.Add(new SpriteAnimationSet("Default Folder"));
         }
 
         private void LoadTextures()
@@ -231,6 +244,32 @@ namespace Animation_Editor.Modules.SpriteViewer.ViewModels
             newFrame.Name = anim.Frames.Count.ToString();
 
             anim.Frames.Add(newFrame);
+        }
+
+        public void OnSpriteCreated(AnimatedSprite sprite)
+        {
+            Sprite = sprite;
+            var list = new List<SpriteAnimationSet>(_animations);
+            Sprite.Animations = list;
+        }
+
+        private void PlayAnimation(object obj)
+        {
+            var list = new List<SpriteAnimationSet>(_animations);
+            Sprite.Animations = list;
+
+            var anim = SelectedAnimation as SpriteAnimation;
+            if (anim == null)
+            {
+                MessageBox.Show("Invalid animation!");
+                return;
+            }
+            Sprite.Play(anim);
+        }
+
+        private void StopAnimation(object obj)
+        {
+
         }
 
         private void OnAnimationChanged()

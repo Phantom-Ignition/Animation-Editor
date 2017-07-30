@@ -72,6 +72,7 @@ namespace Animation_Editor.Modules.SpriteViewer.Views
                 CurrentAnimation = selectedAnim as SpriteAnimation,
                 CurrentFrame = model.SelectedFrame as AnimationFrame,
                 OnNewFrameSelected = model.OnNewFrameSelected,
+                OnSpriteCreated = model.OnSpriteCreated,
                 EditRequest = model.EditRequest,
                 Request = model.Request
             };

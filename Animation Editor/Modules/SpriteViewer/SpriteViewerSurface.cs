@@ -3,6 +3,7 @@ using Animation_Editor.Modules.SpriteViewer.ViewModels;
 using Animation_Editor.ProjectSprite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.TextureAtlases;
 
 namespace Animation_Editor.Modules.SpriteViewer
 {
@@ -20,7 +21,17 @@ namespace Animation_Editor.Modules.SpriteViewer
         //--------------------------------------------------
         // Spritesheet
 
-        public Texture2D SpritesheetTexture { get; set; }
+        private Texture2D _spritesheetTexture;
+        public Texture2D SpritesheetTexture
+        {
+            get { return _spritesheetTexture; }
+            set
+            {
+                if (_sprite != null)
+                    _sprite.TextureRegion = new TextureRegion2D(value);
+                _spritesheetTexture = value;
+            }
+        }
 
         //--------------------------------------------------
         // Data
@@ -28,22 +39,25 @@ namespace Animation_Editor.Modules.SpriteViewer
         private SpriteViewerSurfaceData _data;
 
         //--------------------------------------------------
-        // Grid
-
-        private Texture2D _gridTexture;
-
-        //--------------------------------------------------
         // Selection
-
-        private Texture2D _selectionTexture;
+        
         private Point _selectionInitial;
         private bool _drawSelection;
 
         //--------------------------------------------------
-        // Current Frame
+        // Dot texture
+        
+        private Texture2D _dotTexure;
 
-        private AnimationFrame _currentFrame;
-        private Texture2D _currentFrameTexure;
+        //--------------------------------------------------
+        // Sprite
+
+        private AnimatedSprite _sprite;
+
+        //--------------------------------------------------
+        // Game Time
+
+        private GameTime _gameTime;
 
         //--------------------------------------------------
         // Current Phase
@@ -64,26 +78,28 @@ namespace Animation_Editor.Modules.SpriteViewer
         {
             _graphicsDevice = graphicsDevice;
             _spriteBatch = new SpriteBatch(_graphicsDevice);
+
             _input = new SpriteViewerSurfaceInput();
 
-            _selectionTexture = new Texture2D(_graphicsDevice, 1, 1);
-            _selectionTexture.SetData(new[] { Color.Orange });
+            _dotTexure = new Texture2D(_graphicsDevice, 1, 1);
+            _dotTexure.SetData(new[] { Color.White });
 
-            _currentFrame = null;
-            _currentFrameTexure = new Texture2D(_graphicsDevice, 1, 1);
-            _currentFrameTexure.SetData(new Color[] { Color.White });
-
-            _gridTexture = new Texture2D(_graphicsDevice, 1, 1);
-            _gridTexture.SetData(new[] { Color.Gray });
+            _gameTime = new GameTime();
         }
 
         public void SetData(SpriteViewerSurfaceData data)
         {
             _data = data;
-            if (_data.Request == SpriteViewerRequests.EditFrame)
+            switch (_data.Request)
             {
-                _phase = SurfacePhase.FrameEdit;
-                _editObject = _data.EditRequest;
+                case SpriteViewerRequests.EditFrame:
+                    _phase = SurfacePhase.FrameEdit;
+                    _editObject = _data.EditRequest;
+                    break;
+                case SpriteViewerRequests.CreateSprite:
+                    _sprite = new AnimatedSprite(_dotTexure);
+                    _data.OnSpriteCreated(_sprite);
+                    break;
             }
         }
 
@@ -97,6 +113,10 @@ namespace Animation_Editor.Modules.SpriteViewer
             }
 
             _input.PostUpdate();
+
+            
+            if (_sprite != null)
+            _sprite.Update(_gameTime);
         }
         
         private void UpdateSelection()
@@ -131,6 +151,7 @@ namespace Animation_Editor.Modules.SpriteViewer
             DrawFrameRect();
             DrawColliders();
             DrawSelection();
+            DrawAnimatedSprite();
 
             _spriteBatch.End();
         }
@@ -154,8 +175,8 @@ namespace Animation_Editor.Modules.SpriteViewer
             if (frame.FrameRect != Rectangle.Empty)
             {
                 var rect = frame.FrameRect;
-                _spriteBatch.Draw(_currentFrameTexure, rect, frame.Color * 0.5f);
-                _spriteBatch.DrawRectangleBorder(_currentFrameTexure, rect, 2, frame.Color);
+                _spriteBatch.Draw(_dotTexure, rect, frame.Color * 0.5f);
+                _spriteBatch.DrawRectangleBorder(_dotTexure, rect, 2, frame.Color);
             }
         }
 
@@ -169,8 +190,8 @@ namespace Animation_Editor.Modules.SpriteViewer
             if (_drawSelection)
             {
                 var rect = GetSelectionRectangle();
-                _spriteBatch.Draw(_selectionTexture, rect, Color.White * 0.5f);
-                _spriteBatch.DrawRectangleBorder(_selectionTexture, rect, 2, Color.Orange);
+                _spriteBatch.Draw(_dotTexure, rect, Color.Orange * 0.5f);
+                _spriteBatch.DrawRectangleBorder(_dotTexure, rect, 2, Color.Orange);
             }
         }
 
@@ -184,14 +205,23 @@ namespace Animation_Editor.Modules.SpriteViewer
             for (float x = -cols; x < cols; x++)
             {
                 var rect = new Rectangle((int)(x * _data.GridSize), 0, 1, height);
-                _spriteBatch.Draw(_gridTexture, rect, Color.White * 0.8f);
+                _spriteBatch.Draw(_dotTexure, rect, Color.Gray * 0.8f);
             }
 
             for (float y = -rows; y < rows; y++)
             {
                 var rect = new Rectangle(0, (int)(y * _data.GridSize), width, 1);
-                _spriteBatch.Draw(_gridTexture, rect, Color.White * 0.8f);
+                _spriteBatch.Draw(_dotTexure, rect, Color.Gray * 0.8f);
             }
+        }
+
+        private void DrawAnimatedSprite()
+        {
+            if (_sprite == null) return;
+
+            var rect = new Rectangle(0, 0, _graphicsDevice.Viewport.Width, _graphicsDevice.Viewport.Height);
+            _spriteBatch.Draw(_dotTexure, rect, Color.Black * 0.5f);
+            _sprite.Draw(_spriteBatch, Vector2.Zero);
         }
 
         private Rectangle GetSelectionRectangle()
